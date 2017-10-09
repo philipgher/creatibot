@@ -1,0 +1,282 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>Creatibot</title>
+	<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', function (event) {
+			var allText;
+
+			function readTextFile(file) {
+				var rawFile = new XMLHttpRequest();
+				rawFile.open("GET", file, false);
+				rawFile.onreadystatechange = function () {
+					if (rawFile.readyState === 4) {
+						if (rawFile.status === 200 || rawFile.status == 0) {
+							allText = rawFile.responseText;
+							var n = allText.search("\n");
+							console.log(n);
+						}
+					}
+				}
+				rawFile.send(null);
+			}
+
+			readTextFile('input.txt');
+
+			// type one text in the typwriter
+			// keeps calling itself until the text is finished
+			function typeWriter(text, i, fnCallback) {
+				// chekc if text isn't finished yet
+				if (i < (text.length)) {
+					// add next character to h1
+					document.querySelector("h1").innerHTML = text.substring(0, i + 1) + '<span aria-hidden="true"></span>';
+					// wait for a while and call this function again for next character
+					setTimeout(function () {
+						typeWriter(text, i + 1, fnCallback)
+					}, 100);
+				} else {
+					setTimeout(function () {
+						$("#poem").empty();
+						typeWriter(text, 0, fnCallback);
+					}, 2000);
+
+				}
+			}
+
+			// start a typewriter animation for a text in the dataText array
+			function StartTextAnimation(i) {
+				// check if dataText[i] exists
+				if (i < allText.length) {
+					// text exists! start typewriter animation
+					typeWriter(allText, 0, function () {
+						// after callback (and whole text has been animated), start next text
+						StartTextAnimation(0);
+					});
+				}
+			}
+
+			// start the text animation
+			StartTextAnimation(0);
+
+
+		});
+
+		window.onload = function () {
+			var intervalTime = 10000;
+			var speed = 800;
+			var folder1 = "neural-style/Output6";
+			$.ajax({
+				url: folder1,
+				success: function (data) {
+					$(data).find("a").attr("href", function (i, val) {
+						if (val.match(/\.(jpe?g|png|gif)$/)) {
+							setInterval(function () {
+								//console.log(val);
+								$("#gallery").delay(speed).queue(function (next) {
+									$(this).css("background-image", "url(" + val + ")");
+									next();
+								});
+							}, intervalTime);
+						}
+					});
+				}
+			});
+
+			var folder2 = "neural-style/Output3";
+			$.ajax({
+				url: folder2,
+				success: function (data) {
+					$(data).find("a").attr("href", function (i, val) {
+						if (val.match(/\.(jpe?g|png|gif)$/)) {
+							setInterval(function () {
+								//console.log(val);
+								$("#gallery2").delay(speed).queue(function (next) {
+									$(this).css("background-image", "url(" + val + ")");
+									next();
+								});
+							}, intervalTime);
+						}
+					});
+				}
+			});
+
+			var folder3 = "neural-style/Output5";
+			$.ajax({
+				url: folder3,
+				success: function (data) {
+					$(data).find("a").attr("href", function (i, val) {
+						if (val.match(/\.(jpe?g|png|gif)$/)) {
+							setInterval(function () {
+								//console.log(val);
+								$("#gallery3").delay(speed).queue(function (next) {
+									$(this).css("background-image", "url(" + val + ")");
+									next();
+								});
+							}, intervalTime);
+						}
+					});
+				}
+			});
+
+			var aud = document.getElementById("audio");
+
+			setInterval(getAudioTime, 100);
+
+			function getAudioTime() {
+				console.log(aud.currentTime);
+				if (aud.currentTime < 46 / 4) {
+					$('#hider1').css('width', 30 - (aud.currentTime * 2.6) + '%');
+					$('#hider2').css('width', '30%');
+					$('#hider3').css('width', '30%');
+					$('#hider4').css('width', '30%');
+				} else if (aud.currentTime > 46 / 4 && aud.currentTime < 46 / 2) {
+					$('#hider2').css('width', 30 - ((aud.currentTime - 11.5) * 2.6) + '%');
+					$('#hider1').css('width', '0%');
+					$('#hider3').css('width', '30%');
+					$('#hider4').css('width', '30%');
+				} else if (aud.currentTime > 46 / 2 && aud.currentTime < (46 / 4) * 3) {
+					$('#hider3').css('width', 30 - ((aud.currentTime - 23) * 2.6) + '%');
+					$('#hider1').css('width', '0%');
+					$('#hider2').css('width', '0%');
+					$('#hider4').css('width', '30%');
+				} else if (aud.currentTime > (46 / 4) * 3 && aud.currentTime < (46) * 3) {
+					$('#hider4').css('width', 30 - ((aud.currentTime - 34.5) * 2.6) + '%');
+					$('#hider1').css('width', '0%');
+					$('#hider2').css('width', '0%');
+					$('#hider3').css('width', '0%');
+				}
+			}
+		};
+	</script>
+	<style>
+		@import url(https://fonts.googleapis.com/css?family=Anonymous+Pro);
+		body {
+			background-color: rgb(250, 250, 250);
+			height: 100%;
+			font-family: 'Anonymous Pro', monospace;
+			color: rgb(50, 50, 50);
+		}
+		
+		body > div {
+			width: 33%;
+			float: left;
+			padding: 20px;
+			box-sizing: border-box;
+		}
+		
+		#poezie h1 {
+			max-width: 33%;
+			position: absolute;
+			bottom: 200px;
+			line-height: 1.2em;
+			font-weight: 100;
+			font-size: 1.2em;
+			margin-right: 50px;
+		}
+		
+		#gallery,
+		#gallery2,
+		#gallery3 {
+			background: url(neural-style/Output2/out_100.png);
+			margin-bottom: 20px;
+			background-repeat: no-repeat;
+			background-size: 100% 100%;
+			background-position: center;
+			width: 100%;
+			height: 280px;
+		}
+		
+		#musician img {
+			max-width: 100%;
+			margin: 0;
+			padding: 0;
+		}
+		
+		#musician audio {
+			width: 100%;
+			background-color: rgba(250, 250, 250, 0.2);
+		}
+		
+		#hider1 {
+			position: absolute;
+			right: 43px;
+			top: 120px;
+			width: 30%;
+			height: 120px;
+			background-color: white;
+		}
+		
+		#hider2 {
+			position: absolute;
+			right: 43px;
+			top: 220px;
+			width: 30%;
+			height: 120px;
+			background-color: white;
+		}
+		
+		#hider3 {
+			position: absolute;
+			right: 43px;
+			top: 340px;
+			width: 30%;
+			height: 120px;
+			background-color: white;
+		}
+		
+		#hider4 {
+			position: absolute;
+			right: 43px;
+			top: 460px;
+			width: 30%;
+			height: 120px;
+			background-color: white;
+		}
+	</style>
+</head>
+
+
+
+<body>
+	<div id="poezie">
+		<h1 id="poem"></h1>
+	</div>
+
+	<div id="painter">
+		<p>Pixels on screen, 2017</p>
+		<div id="gallery">
+		</div>
+		<div id="gallery2">
+		</div>
+		<div id="gallery3">
+		</div>
+	</div>
+
+	<div id="musician">
+		<p>Composition #1</p>
+		<audio id="audio" controls>
+			<source id="thefile" src="epoch30-slow.mp3" type="audio/mpeg" />
+		</audio>
+		<div>
+			<img src="music/notes1.png" />
+			<div id="hider1"></div>
+		</div>
+		<div>
+			<img src="music/notes2.png" />
+			<div id="hider2"></div>
+		</div>
+		<div>
+			<img src="music/notes3.png" />
+			<div id="hider3"></div>
+		</div>
+		<div>
+			<img src="music/notes4.png" />
+			<div id="hider4"></div>
+		</div>
+	</div>
+</body>
+
+</html>

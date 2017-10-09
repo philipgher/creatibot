@@ -1,0 +1,5 @@
+Tekst wordt gegenereerd door Word-RNN-tensorflow git.
+
+Afbeeldingen worden gegenereerd door Neural-style.
+
+Muziek door Deepjazz.
